@@ -72,6 +72,9 @@ export interface Dependent {
   name: string;
   relationship: string;
   age: number;
+  citizenCountry: string;
+  residenceCountry: string;
+  residencyStatus?: string;
 }
 
 export interface DependentInfo {
@@ -99,8 +102,8 @@ export interface WorkExperience {
   isSelfEmployed: boolean;
   hoursPerWeek: number;
   country: string;
-  province: string;
-  workPermitType: string;
+  province?: string;
+  workPermitType?: string;
   hasLMIA: boolean;
   nocCode: string;
   startDate: string;

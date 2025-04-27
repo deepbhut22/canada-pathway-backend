@@ -36,8 +36,8 @@ const DependentSchema: Schema = new Schema({
   residenceCountry: { type: String, required: true },
   residencyStatus: {
     type: String, 
-    enum: ['permanent residence', 'work permit', 'student permit', 'citizen', 'refugee', 'other'], 
-    required: true 
+    // enum: ['permanent residence', 'work permit', 'student permit', 'citizen', 'refugee', 'other'], 
+    // required: true   
   },
 
 });
@@ -61,11 +61,11 @@ const WorkExperienceSchema: Schema = new Schema({
   isSelfEmployed: { type: Boolean, required: true },
   hoursPerWeek: { type: Number, required: true },
   country: { type: String, required: true },
-  province: { type: String, required: true },
+  province: { type: String },
   workPermitType: {
     type: String,
-    enum: ['open', 'closed', 'citizen', 'refugee', 'other'],
-    required: true
+    // enum: ['open', 'closed', 'citizen', 'refugee', 'other'],
+    // required: true
   },
   hasLMIA: { type: Boolean, required: true },
   nocCode: { type: String, required: true },
