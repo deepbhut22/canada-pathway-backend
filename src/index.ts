@@ -17,7 +17,8 @@ dotenv.config();
 connectDB();
 
 const app: Express = express();
-const PORT = process.env.PORT || 5000;
+const PORT = parseInt(process.env.PORT || "5000", 10);
+const HOST = "0.0.0.0";
 
 // Middleware
 app.use(cors({
@@ -42,7 +43,7 @@ app.use('/api/news', newsRoutes);
 app.use(errorHandler);
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, HOST, () => {
   console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
 });
 
