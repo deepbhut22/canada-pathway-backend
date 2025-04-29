@@ -8,6 +8,7 @@ import connectDB from './config/db';
 import authRoutes from './routes/authRoutes';
 import userProfileRoutes from './routes/userProfileRoutes';
 import newsRoutes from './routes/newsRoutes';
+import reportRoutes from './routes/reportRoutes';
 import { errorHandler } from './middleware/errorMiddleware';
 
 // Load environment variables
@@ -38,6 +39,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', userProfileRoutes);
 app.use('/api/news', newsRoutes);
+app.use('/api/report', reportRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
