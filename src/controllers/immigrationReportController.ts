@@ -6,7 +6,7 @@ import ImmigrationReport from '../models/immigrationReportModel';
 import dotenv from 'dotenv';
 import { expressEntryPrompt } from '../utils/prompts/expressEntry';
 import { pnpPrompt } from '../utils/prompts/pnp';
-
+import { recommendationPrompt } from '../utils/prompts/recommendation';
 dotenv.config();
 
 const openai = new OpenAI({
@@ -214,6 +214,61 @@ export const generatePNPReport = async (req: Request, res: Response) => {
         // return res.status(200).json();
     } catch (error) {
         console.error('Error generating PNP report:', error);
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
+};
+
+export const generateRecommendationReport = async (req: Request, res: Response) => {
+    try {
+        console.log("Generating recommendation report...");
+
+        const { userId } = req.params;
+
+        const oldReport = await ImmigrationReport.findOne({ user: userId });
+
+        if (oldReport && oldReport.recommendations) {
+            console.log("Recommendation report found.");
+            return res.status(200).json(oldReport.recommendations);
+        }
+
+        const userProfile = await UserProfile.find({ user: userId });
+        
+        if (!userProfile) {
+            return res.status(404).json({ error: 'User profile not found.' });
+        }
+
+        const prompt = recommendationPrompt(userProfile[0].toObject(), oldReport?.expressEntry);
+
+        const completion = await openai.chat.completions.create({
+            model: 'gpt-4.1-mini',
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.4,
+            response_format: { type: 'json_object' }
+        });
+
+        const report = completion.choices[0]?.message?.content;
+
+        if (!report) {
+            return res.status(500).json({ error: 'Failed to generate recommendation report.' });
+        } 
+
+        const parsedReport = JSON.parse(report);
+
+        // Save the report to MongoDB
+        await ImmigrationReport.findOneAndUpdate( 
+            { user: userId },
+            { 
+                user: userId,
+                recommendations: parsedReport,
+                $setOnInsert: { createdAt: new Date() },
+                updatedAt: new Date()
+            },
+            { upsert: true, new: true }
+        );
+
+        return res.status(200).json(parsedReport);
+    } catch (error) {
+        console.error('Error generating recommendation report:', error);
         return res.status(500).json({ error: 'Internal server error.' });
     }
 };
