@@ -1,4 +1,4 @@
-export const pnpPrompt = (userData: any): string => `
+export const pnpPrompt = (userData: any, expressEntry: any): string => `
 You are a Canadian immigration expert.
 
 A user has submitted their profile. Your task is to assess their eligibility against specific Provincial Nominee Program (PNP) streams.
@@ -44,14 +44,14 @@ Only assess eligibility for the following provinces and their listed streams:
 ---
 
 # Instructions:
-- For each stream, determine if the user is "Eligible" or "Not Eligible."
+- For each stream, determine if the user is "Eligible" or "Not Eligibl via a variable isEligible"
 - If "Eligible," explain why they match.
 - If "Not Eligible," explain clearly what requirement they are missing (e.g., language, no job offer, no Canadian study, Express Entry profile missing).
 - Always reply in JSON format.
 - Output array must have:
   - province
   - stream_name
-  - status ("Eligible" or "Not Eligible")
+  - isEligible (true or false)
   - reason (short explanation)
 
 - Also create a "suggestions" array:
@@ -101,6 +101,15 @@ Important:
             "action": "Consider a 2-year study program in Ontario for future PNP options",
         ]
 }
+\`\`\`
+**User Form Data:**
+\`\`\`json
+${JSON.stringify(userData, null, 2)}
+\`\`\`
+
+**Express Entry Profile:**
+\`\`\`json
+${JSON.stringify(expressEntry, null, 2)}
 \`\`\`
 
 `;

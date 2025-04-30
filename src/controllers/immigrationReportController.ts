@@ -174,11 +174,13 @@ export const generatePNPReport = async (req: Request, res: Response) => {
 
         const userProfile = await UserProfile.find({ user: userId });
 
+        // console.log(userProfile[0].toObject());
+
         if (!userProfile) {
             return res.status(404).json({ error: 'User profile not found.' });
         }
 
-        const prompt = pnpPrompt(userProfile[0].toObject());
+        const prompt = pnpPrompt(userProfile[0].toObject(), oldReport?.expressEntry);
 
         const completion = await openai.chat.completions.create({
             model: 'gpt-4.1-mini',
@@ -195,8 +197,6 @@ export const generatePNPReport = async (req: Request, res: Response) => {
 
         const parsedReport = JSON.parse(report);
 
-        console.log(parsedReport);
-
         // Save the report to MongoDB
         await ImmigrationReport.findOneAndUpdate( 
             { user: userId },
@@ -210,6 +210,8 @@ export const generatePNPReport = async (req: Request, res: Response) => {
         );
 
         return res.status(200).json(parsedReport); 
+
+        // return res.status(200).json();
     } catch (error) {
         console.error('Error generating PNP report:', error);
         return res.status(500).json({ error: 'Internal server error.' });
