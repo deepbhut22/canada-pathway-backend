@@ -237,7 +237,7 @@ export const generateRecommendationReport = async (req: Request, res: Response) 
             return res.status(404).json({ error: 'User profile not found.' });
         }
 
-        const prompt = recommendationPrompt(userProfile[0].toObject(), oldReport?.expressEntry);
+        const prompt = recommendationPrompt(userProfile[0].toObject());
 
         const completion = await openai.chat.completions.create({
             model: 'gpt-4.1-mini',

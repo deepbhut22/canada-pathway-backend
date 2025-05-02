@@ -15,21 +15,21 @@ export interface BasicInfo {
   fullName: string;
   email: string;
   gender: string;
+  age: number;
   citizenCountry: string;
   residenceCountry: string;
-  admissibilityIssue: boolean;
-  residencyIntent: boolean;
-  availableFunds: number | null;
+  province?: string;
 }
 
 // Language Info
 export interface LanguageTest {
   type: string;
   testDate: string;
-  readingScore: number | null;
-  writingScore: number | null;
-  speakingScore: number | null;
-  listeningScore: number | null;
+  meetsMinimumScore: boolean;
+  readingScore?: number | null;
+  writingScore?: number | null;
+  speakingScore?: number | null;
+  listeningScore?: number | null;
 }
 
 export interface LanguageInfo {
@@ -47,8 +47,6 @@ export interface Education {
   fieldOfStudy: string;
   inProgress: boolean;
   province?: string;
-  startDate: string;
-  endDate?: string;
   country: string;
 }
 
@@ -69,8 +67,6 @@ export interface SpouseInfo {
 
 // Dependent Info
 export interface Dependent {
-  name: string;
-  relationship: string;
   age: number;
   citizenCountry: string;
   residenceCountry: string;
@@ -91,24 +87,25 @@ export interface Connection {
 }
 
 export interface ConnectionInfo {
-  hasConnections: boolean;
-  connectionList: Connection[];
+  doesUserHaveFamilyInCanadaWhoIsCitizenOrPermanentResident: boolean;
 }
 
 // Work Experience Info
 export interface WorkExperience {
   jobTitle: string;
-  isPaid: boolean;
+  // isPaid: boolean;
   isSelfEmployed: boolean;
-  hoursPerWeek: number;
+  // hoursPerWeek: number;
   country: string;
   province?: string;
   workPermitType?: string;
-  hasLMIA: boolean;
+  // hasLMIA: boolean;
   nocCode: string;
-  startDate: string;
-  endDate: string;
+  // startDate: string;
+  // endDate: string;
   isCurrentJob: boolean;
+  numberOfMonths: number;
+  tier: string;
 }
 
 export interface WorkInfo {
@@ -120,13 +117,14 @@ export interface WorkInfo {
 export interface JobOffer {
   jobTitle: string;
   nocCode: string;
-  isPaid: boolean;
-  hoursPerWeek: number | null;
+  // isPaid: boolean;
+  // hoursPerWeek: number | null;
   province: string;
-  isLMIA: boolean;
+  // isLMIA: boolean;
   startDate: string;
-  hasEndDate: boolean;
-  endDate: string;
+  tier: string;
+  // hasEndDate: boolean;
+  // endDate: string;
 }
 
 export interface JobOfferInfo {

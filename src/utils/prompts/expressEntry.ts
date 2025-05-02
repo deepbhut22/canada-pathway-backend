@@ -50,6 +50,7 @@ Categories to assess:
 - Do NOT return any "TBD", "unknown", or null values.
 - Format the result strictly as a valid JSON object matching the structure below.
 - Do not use placeholders like "TBD" or "unknown". All fields must have concrete values derived from the form data above.
+- the meetsMinimumScore field is true then consider user has a good score in that french test and he will be getting some points for that.
 ---
     
 **User Form Data:**

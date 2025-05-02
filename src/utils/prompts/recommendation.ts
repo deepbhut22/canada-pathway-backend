@@ -1,4 +1,4 @@
-export const recommendationPrompt = (userData: any, expressEntry: any): string => `
+export const recommendationPrompt = (userData: any): string => `
 You are a Canadian immigration expert specialized in Express Entry.
 
 A user has submitted their profile and corresponding Express Entry data. Your task is to analyze their data and provide guidance on how they can improve their CRS (Comprehensive Ranking System) score.
@@ -47,10 +47,5 @@ These are the 5 areas to evaluate:
 **User Profile Data:**
 \`\`\`json
 ${JSON.stringify(userData, null, 2)}
-\`\`\`
-
-**Express Entry Data:**
-\`\`\`json
-${JSON.stringify(expressEntry, null, 2)}
 \`\`\`
 `;

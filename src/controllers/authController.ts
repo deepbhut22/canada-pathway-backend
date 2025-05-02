@@ -77,7 +77,6 @@ export const loginUser = async (
   next: NextFunction
 ) => {
   try {
-    console.log(req.body);
     
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -88,7 +87,6 @@ export const loginUser = async (
 
     // Find user by email
     const user = await User.findOne({ email }).select('+password');
-    console.log("user : ", user);
 
     // Check if user exists and password matches
     if (user && (await user.matchPassword(password))) {

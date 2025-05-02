@@ -30,9 +30,8 @@ router.put(
     body('gender').optional(),
     body('citizenCountry').optional(),
     body('residenceCountry').optional(),
-    body('admissibilityIssue').optional().isBoolean(),
-    body('residencyIntent').optional().isBoolean(),
-    body('availableFunds').optional().isNumeric(),
+    body('age').optional().isNumeric(),
+    body('province').optional(),
   ],
   updateBasicInfo
 );
@@ -70,8 +69,6 @@ router.put(
     body('educationList.*.institution').optional(),
     body('educationList.*.degree').optional(),
     body('educationList.*.fieldOfStudy').optional(),
-    body('educationList.*.startDate').optional(),
-    body('educationList.*.endDate').optional({nullable: true}),
     body('educationList.*.country').optional(),
   ],
   updateEducationInfo
@@ -96,9 +93,9 @@ router.put(
   [
     body('hasDependents').optional().isBoolean(),
     body('dependentList').optional().isArray(),
-    body('dependentList.*.name').optional(),
-    body('dependentList.*.relationship').optional(),
     body('dependentList.*.age').optional().isNumeric(),
+    body('dependentList.*.citizenCountry').optional(),
+    body('dependentList.*.residenceCountry').optional(),
   ],
   updateDependentInfo
 );
@@ -107,11 +104,7 @@ router.put(
 router.put(
   '/connection',
   [
-    body('hasConnections').optional().isBoolean(),
-    body('connectionList').optional().isArray(),
-    body('connectionList.*.type').optional(),
-    body('connectionList.*.relationship').optional(),
-    body('connectionList.*.location').optional(),
+    body('doesUserHaveFamilyInCanadaWhoIsCitizenOrPermanentResident').optional().isBoolean(),
   ],
   updateConnectionInfo
 );
@@ -122,12 +115,11 @@ router.put(
   [
     body('hasWorkExperience').optional().isBoolean(),
     body('workExperienceList').optional().isArray(),
-    body('workExperienceList.*.employer').optional(),
-    body('workExperienceList.*.position').optional(),
-    body('workExperienceList.*.startDate').optional(),
-    body('workExperienceList.*.endDate').optional(),
+    body('workExperienceList.*.jobTitle').optional(),
     body('workExperienceList.*.country').optional(),
     body('workExperienceList.*.isCurrentJob').optional().isBoolean(),
+    body('workExperienceList.*.numberOfMonths').optional().isNumeric(),
+    body('workExperienceList.*.tier').optional({nullable: true}),
   ],
   updateWorkInfo
 );

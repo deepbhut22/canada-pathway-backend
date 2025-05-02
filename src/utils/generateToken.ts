@@ -19,7 +19,6 @@ const generateToken = (
   const token = jwt.sign(payload, secret, {
     expiresIn: expiresIn as jwt.SignOptions['expiresIn']
   });
-  console.log(token);
   
   return token;
 };

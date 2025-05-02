@@ -3,8 +3,7 @@ import { validationResult } from 'express-validator';
 import UserProfile from '../models/userProfileModel';
 import User from '../models/userModel';
 import { AppError } from '../middleware/errorMiddleware';
-import { log } from 'console';
-
+import { LanguageTest } from '../types';
 // @desc    Get complete user profile
 // @route   GET /api/profile
 // @access  Private
@@ -89,6 +88,10 @@ export const updateLanguageInfo = async (
 
     userProfile.languageInfo = {
       // ...userProfile.languageInfo,
+      ...req.body,
+    };
+
+    userProfile.languageInfo = {
       ...req.body,
     };
 
@@ -235,8 +238,7 @@ export const updateConnectionInfo = async (
 
     userProfile.connectionInfo = {
       // ...userProfile.connectionInfo,
-      hasConnections: req.body.hasConnections,  
-      connectionList: req.body.connectionList.map(({ id, ...rest }: { id: any; [key: string]: any }) => rest),
+      doesUserHaveFamilyInCanadaWhoIsCitizenOrPermanentResident: req.body.doesUserHaveFamilyInCanadaWhoIsCitizenOrPermanentResident,
     };
 
     // Update profile completion status
@@ -258,7 +260,6 @@ export const updateWorkInfo = async (
   next: NextFunction
 ) => {
   try {
-    // console.log(req.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return next(new AppError('Validation error', 400, errors.array()));
@@ -315,8 +316,8 @@ export const updateJobOfferInfo = async (
       jobOffer: req.body.jobOffer,
     };
 
-    // Update profile completion status
-    await checkProfileCompletion(req.user._id);
+    // // Update profile completion status
+    // await checkProfileCompletion(req.user._id);
 
     const updatedProfile = await userProfile.save();
     res.json(updatedProfile.jobOfferInfo);

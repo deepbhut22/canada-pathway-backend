@@ -9,10 +9,11 @@ export interface IUserProfile extends Document, UserProfile {
 const LanguageTestSchema: Schema = new Schema({
   type: { type: String, default: '' },
   testDate: { type: String, default: '' },
-  readingScore: { type: Number, default: null },
-  writingScore: { type: Number, default: null },
-  speakingScore: { type: Number, default: null },
-  listeningScore: { type: Number, default: null },
+  readingScore: { type: Number, default: null, required: false },
+  writingScore: { type: Number, default: null, required: false },
+  speakingScore: { type: Number, default: null, required: false },
+  listeningScore: { type: Number, default: null, required: false },
+  meetsMinimumScore: { type: Boolean, default: null, required: false },
 });
 
 // Education Schema
@@ -22,15 +23,13 @@ const EducationSchema: Schema = new Schema({
   province: { type: String, required: false },
   fieldOfStudy: { type: String, required: true },
   inProgress: { type: Boolean, required: true },
-  startDate: { type: String, required: true },
-  endDate: { type: String, required: false },
   country: { type: String, required: true },
 });
 
 // Dependent Schema
 const DependentSchema: Schema = new Schema({
   // name: { type: String, required: true },
-  relationship: { type: String, required: true },
+  // relationship: { type: String, required: true },
   age: { type: Number, required: true },
   citizenCountry: { type: String, required: true },
   residenceCountry: { type: String, required: true },
@@ -57,9 +56,9 @@ const ConnectionSchema: Schema = new Schema({
 // Work Experience Schema
 const WorkExperienceSchema: Schema = new Schema({
   jobTitle: { type: String, required: true },
-  isPaid: { type: Boolean, required: true },
+  // isPaid: { type: Boolean, required: true },
   isSelfEmployed: { type: Boolean, required: true },
-  hoursPerWeek: { type: Number, required: true },
+  // hoursPerWeek: { type: Number, required: true },
   country: { type: String, required: true },
   province: { type: String },
   workPermitType: {
@@ -67,24 +66,27 @@ const WorkExperienceSchema: Schema = new Schema({
     // enum: ['open', 'closed', 'citizen', 'refugee', 'other'],
     // required: true
   },
-  hasLMIA: { type: Boolean, required: true },
+  // hasLMIA: { type: Boolean, required: true },
   nocCode: { type: String, required: true },
-  startDate: { type: String, required: true },
-  endDate: { type: String, default: '' },
+  // startDate: { type: String, required: true },
+  // endDate: { type: String, default: '' },
   isCurrentJob: { type: Boolean, default: false },
+  numberOfMonths: { type: Number, required: true },
+  tier: { type: String, required: false },
 });
 
 // Job Offer Schema
 const JobOfferSchema: Schema = new Schema({
   jobTitle: { type: String, default: '' },
   nocCode: { type: String, default: '' },
-  isPaid: { type: Boolean, default: false },
-  hoursPerWeek: { type: Number, default: null },
+  // isPaid: { type: Boolean, default: false },
+  // hoursPerWeek: { type: Number, default: null },
   province: { type: String, default: '' },
-  isLMIA: { type: Boolean, default: false },
+  // isLMIA: { type: Boolean, default: false },
   startDate: { type: String, default: '' },
-  hasEndDate: { type: Boolean, default: false },
-  endDate: { type: String, default: '' },
+  // hasEndDate: { type: Boolean, default: false },
+  // endDate: { type: String, default: '' },
+  tier: { type: String, required: false },
 });
 
 // Basic Info Schema
@@ -92,11 +94,10 @@ const BasicInfoSchema: Schema = new Schema({
   fullName: { type: String, default: '' },
   email: { type: String, default: '' },
   gender: { type: String, default: '' },
+  age: { type: Number, default: null },
   citizenCountry: { type: String, default: '' },
   residenceCountry: { type: String, default: '' },
-  admissibilityIssue: { type: Boolean, default: false },
-  residencyIntent: { type: Boolean, default: false },
-  availableFunds: { type: Number, default: null },
+  province: { type: String, default: '' },
 });
 
 // Language Info Schema
@@ -132,8 +133,9 @@ const DependentInfoSchema: Schema = new Schema({
 
 // Connection Info Schema
 const ConnectionInfoSchema: Schema = new Schema({
-  hasConnections: { type: Boolean, default: false },
-  connectionList: [ConnectionSchema],
+  // hasConnections: { type: Boolean, default: false },
+  // connectionList: [ConnectionSchema],
+  doesUserHaveFamilyInCanadaWhoIsCitizenOrPermanentResident: { type: Boolean, default: false },
 });
 
 // Work Info Schema
