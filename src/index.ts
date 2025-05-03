@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import morgan from 'morgan';
 import connectDB from './config/db';
+import passport from 'passport';
+import './config/passport';
 
 // Import routes
 import authRoutes from './routes/authRoutes';
@@ -34,6 +36,9 @@ app.use(express.json());
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// Initialize passport
+app.use(passport.initialize());
 
 // Routes
 app.use('/api/auth', authRoutes);

@@ -3,7 +3,7 @@ import { validationResult } from 'express-validator';
 import UserProfile from '../models/userProfileModel';
 import User from '../models/userModel';
 import { AppError } from '../middleware/errorMiddleware';
-import { LanguageTest } from '../types';
+import { LanguageTest, UserDocument } from '../types';
 // @desc    Get complete user profile
 // @route   GET /api/profile
 // @access  Private
@@ -13,7 +13,7 @@ export const getUserProfile = async (
   next: NextFunction
 ) => {
   try {
-    const userProfile = await UserProfile.findOne({ user: req.user._id });
+    const userProfile = await UserProfile.findOne({ user: (req.user as UserDocument)._id });
 
     if (!userProfile) {
       return next(new AppError('User profile not found', 404));
@@ -41,7 +41,7 @@ export const updateBasicInfo = async (
       return next(new AppError('Validation error', 400, errors.array()));
     }
 
-    const userProfile = await UserProfile.findOne({ user: req.user._id });    
+    const userProfile = await UserProfile.findOne({ user: (req.user as UserDocument)._id });    
 
     if (!userProfile) {
       return next(new AppError('User profile not found', 404));
@@ -53,7 +53,7 @@ export const updateBasicInfo = async (
     };
 
     // Update profile completion status
-    await checkProfileCompletion(req.user._id);
+    await checkProfileCompletion((req.user as UserDocument)._id);
 
     const updatedProfile = await userProfile.save();
     console.log(updatedProfile.basicInfo);
@@ -80,7 +80,7 @@ export const updateLanguageInfo = async (
       return next(new AppError('Validation error', 400, errors.array()));
     }
 
-    const userProfile = await UserProfile.findOne({ user: req.user._id });
+    const userProfile = await UserProfile.findOne({ user: (req.user as UserDocument)._id });
 
     if (!userProfile) {
       return next(new AppError('User profile not found', 404));
@@ -96,7 +96,7 @@ export const updateLanguageInfo = async (
     };
 
     // Update profile completion status
-    await checkProfileCompletion(req.user._id);
+    await checkProfileCompletion((req.user as UserDocument)._id);
 
     const updatedProfile = await userProfile.save();
     res.json(updatedProfile.languageInfo);
@@ -119,7 +119,7 @@ export const updateEducationInfo = async (
       return next(new AppError('Validation error', 400, errors.array()));
     }
 
-    const userProfile = await UserProfile.findOne({ user: req.user._id });
+    const userProfile = await UserProfile.findOne({ user: (req.user as UserDocument)._id });
 
     if (!userProfile) {
       return next(new AppError('User profile not found', 404));
@@ -131,7 +131,7 @@ export const updateEducationInfo = async (
     };
 
     // Update profile completion status
-    await checkProfileCompletion(req.user._id);
+    await checkProfileCompletion((req.user as UserDocument)._id);
 
     const updatedProfile = await userProfile.save();
     res.json(updatedProfile.educationInfo);
@@ -156,7 +156,7 @@ export const updateSpouseInfo = async (
       return next(new AppError('Validation error', 400, errors.array()));
     }
 
-    const userProfile = await UserProfile.findOne({ user: req.user._id });
+    const userProfile = await UserProfile.findOne({ user: (req.user as UserDocument)._id });
 
     if (!userProfile) {
       return next(new AppError('User profile not found', 404));
@@ -168,7 +168,7 @@ export const updateSpouseInfo = async (
     };
 
     // Update profile completion status
-    await checkProfileCompletion(req.user._id);
+    await checkProfileCompletion((req.user as UserDocument)._id);
 
     const updatedProfile = await userProfile.save();
     res.json(updatedProfile.spouseInfo);
@@ -191,7 +191,7 @@ export const updateDependentInfo = async (
       return next(new AppError('Validation error', 400, errors.array()));
     }
 
-    const userProfile = await UserProfile.findOne({ user: req.user._id });
+    const userProfile = await UserProfile.findOne({ user: (req.user as UserDocument)._id });
 
     if (!userProfile) {
       return next(new AppError('User profile not found', 404));
@@ -204,7 +204,7 @@ export const updateDependentInfo = async (
     };
 
     // Update profile completion status
-    await checkProfileCompletion(req.user._id);
+    await checkProfileCompletion((req.user as UserDocument)._id);
 
     const updatedProfile = await userProfile.save();
     
@@ -230,7 +230,7 @@ export const updateConnectionInfo = async (
       return next(new AppError('Validation error', 400, errors.array()));
     }
 
-    const userProfile = await UserProfile.findOne({ user: req.user._id });
+    const userProfile = await UserProfile.findOne({ user: (req.user as UserDocument)._id });
 
     if (!userProfile) {
       return next(new AppError('User profile not found', 404));
@@ -242,7 +242,7 @@ export const updateConnectionInfo = async (
     };
 
     // Update profile completion status
-    await checkProfileCompletion(req.user._id);
+    await checkProfileCompletion((req.user as UserDocument)._id);
 
     const updatedProfile = await userProfile.save();
     res.json(updatedProfile.connectionInfo);
@@ -265,7 +265,7 @@ export const updateWorkInfo = async (
       return next(new AppError('Validation error', 400, errors.array()));
     }
 
-    const userProfile = await UserProfile.findOne({ user: req.user._id });
+    const userProfile = await UserProfile.findOne({ user: (req.user as UserDocument)._id });
 
     if (!userProfile) {
       return next(new AppError('User profile not found', 404));
@@ -278,7 +278,7 @@ export const updateWorkInfo = async (
     };
 
     // Update profile completion status
-    await checkProfileCompletion(req.user._id);
+    await checkProfileCompletion((req.user as UserDocument)._id);
 
     const updatedProfile = await userProfile.save();
     res.json(updatedProfile.workInfo);
@@ -304,7 +304,7 @@ export const updateJobOfferInfo = async (
       return next(new AppError('Validation error', 400, errors.array()));
     }
 
-    const userProfile = await UserProfile.findOne({ user: req.user._id });
+    const userProfile = await UserProfile.findOne({ user: (req.user as UserDocument)._id });
 
     if (!userProfile) {
       return next(new AppError('User profile not found', 404));

@@ -1,6 +1,6 @@
 // User types
-export interface User {
-  id: string;
+export interface UserDocument extends Document {
+  _id: string;
   email: string;
   firstName: string;
   lastName: string;

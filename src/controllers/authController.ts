@@ -4,7 +4,9 @@ import User from '../models/userModel';
 import UserProfile from '../models/userProfileModel';
 import generateToken from '../utils/generateToken';
 import { AppError } from '../middleware/errorMiddleware';
-import { log } from 'node:console';
+import passport from 'passport';
+import { Type } from 'lucide-react';
+import { UserDocument } from '../types/index';
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
@@ -116,7 +118,7 @@ export const getUserProfile = async (
   next: NextFunction
 ) => {
   try {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById((req.user as UserDocument)._id);
 
     if (!user) {
       return next(new AppError('User not found', 404));
@@ -146,7 +148,7 @@ export const updateUserProfile = async (
   next: NextFunction
 ) => {
   try {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById((req.user as UserDocument)._id);
 
     if (user) {
       user.firstName = req.body.firstName || user.firstName;
@@ -173,4 +175,33 @@ export const updateUserProfile = async (
   } catch (error) {
     next(error);
   }
+};
+
+// @desc    Google OAuth login/signup
+// @route   GET /api/auth/google
+// @access  Public
+export const googleAuth = passport.authenticate('google', {
+  scope: ['profile', 'email']
+});
+
+// @desc    Google OAuth callback
+// @route   GET /api/auth/google/callback
+// @access  Public
+export const googleCallback = (req: Request, res: Response, next: NextFunction) => {
+  console.log("googleCallback");
+  passport.authenticate('google', { session: false }, (err: any, user: any) => {
+    if (err) {
+      return next(new AppError('Google authentication failed', 401));
+    }
+
+    if (!user) {
+      return next(new AppError('User not found', 404));
+    }
+
+    // Generate JWT token
+    const token = generateToken(user._id, user.email, user.firstName);
+
+    // Redirect to frontend with token
+    res.redirect(`${process.env.FRONTEND_URL}/auth/google?token=${token}`);
+  })(req, res, next);
 };

@@ -5,10 +5,16 @@ import {
   loginUser,
   getUserProfile,
   updateUserProfile,
+  googleAuth,
+  googleCallback,
 } from '../controllers/authController';
 import { protect } from '../middleware/authMiddleware';
 
 const router = express.Router();
+
+// Google OAuth routes
+router.get('/google', googleAuth);
+router.get('/google/callback', googleCallback);
 
 // Register route with validation
 router.post(
