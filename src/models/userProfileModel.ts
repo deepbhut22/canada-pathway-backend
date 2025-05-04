@@ -8,12 +8,7 @@ export interface IUserProfile extends Document, UserProfile {
 // Language Test Schema
 const LanguageTestSchema: Schema = new Schema({
   type: { type: String, default: '' },
-  testDate: { type: String, default: '' },
-  readingScore: { type: Number, default: null, required: false },
-  writingScore: { type: Number, default: null, required: false },
-  speakingScore: { type: Number, default: null, required: false },
-  listeningScore: { type: Number, default: null, required: false },
-  meetsMinimumScore: { type: Boolean, default: null, required: false },
+  clbScore: { type: Number, default: null },
 });
 
 // Education Schema
@@ -72,7 +67,7 @@ const WorkExperienceSchema: Schema = new Schema({
   // endDate: { type: String, default: '' },
   isCurrentJob: { type: Boolean, default: false },
   numberOfMonths: { type: Number, required: true },
-  tier: { type: String, required: false },
+  teer: { type: String, required: true, default: 0 },
 });
 
 // Job Offer Schema

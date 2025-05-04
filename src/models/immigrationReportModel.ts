@@ -7,22 +7,22 @@ const ExpressEntryReportSchema = new Schema({
     coreHumanCapital: {
       score: { type: Number, required: true },
       maximum: { type: Number, required: true },
-      reason: { type: String, required: true }
+      reason: { type: [String], required: true }
     },
     spouseFactors: {
       score: { type: Number, required: true },
       maximum: { type: Number, required: true },
-      reason: { type: String, required: true }
+      reason: { type: [String], required: true }
     },
     skillTransferability: {
       score: { type: Number, required: true },
       maximum: { type: Number, required: true },
-      reason: { type: String, required: true }
+      reason: { type: [String], required: true }
     },
     additionalPoints: {
       score: { type: Number, required: true },
       maximum: { type: Number, required: true },
-      reason: { type: String, required: true }
+      reason: { type: [String], required: true }
     }
   },
   eligibilityStatus: [{

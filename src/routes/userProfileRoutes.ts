@@ -119,7 +119,7 @@ router.put(
     body('workExperienceList.*.country').optional(),
     body('workExperienceList.*.isCurrentJob').optional().isBoolean(),
     body('workExperienceList.*.numberOfMonths').optional().isNumeric(),
-    body('workExperienceList.*.tier').optional({nullable: true}),
+    body('workExperienceList.*.tier').optional(),
   ],
   updateWorkInfo
 );

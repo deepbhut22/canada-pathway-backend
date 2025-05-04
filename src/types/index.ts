@@ -24,12 +24,7 @@ export interface BasicInfo {
 // Language Info
 export interface LanguageTest {
   type: string;
-  testDate: string;
-  meetsMinimumScore: boolean;
-  readingScore?: number | null;
-  writingScore?: number | null;
-  speakingScore?: number | null;
-  listeningScore?: number | null;
+  clbScore: number;
 }
 
 export interface LanguageInfo {
@@ -105,7 +100,7 @@ export interface WorkExperience {
   // endDate: string;
   isCurrentJob: boolean;
   numberOfMonths: number;
-  tier: string;
+  teer: number;
 }
 
 export interface WorkInfo {
@@ -122,7 +117,7 @@ export interface JobOffer {
   province: string;
   // isLMIA: boolean;
   startDate: string;
-  tier: string;
+  tier: number;
   // hasEndDate: boolean;
   // endDate: string;
 }

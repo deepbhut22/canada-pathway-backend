@@ -5,7 +5,6 @@ import UserProfile from '../models/userProfileModel';
 import generateToken from '../utils/generateToken';
 import { AppError } from '../middleware/errorMiddleware';
 import passport from 'passport';
-import { Type } from 'lucide-react';
 import { UserDocument } from '../types/index';
 
 // @desc    Register a new user

@@ -3,6 +3,7 @@ import { generateExpressEntryReport, generatePNPReport, generateRecommendationRe
 
 const router = express.Router();
 
+
 router.get('/express-entry/:userId', generateExpressEntryReport);
 router.get('/pnp/:userId', generatePNPReport);
 router.get('/recommendations/:userId', generateRecommendationReport);

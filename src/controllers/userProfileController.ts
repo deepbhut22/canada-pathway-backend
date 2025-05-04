@@ -260,6 +260,7 @@ export const updateWorkInfo = async (
   next: NextFunction
 ) => {
   try {
+    console.log(req.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return next(new AppError('Validation error', 400, errors.array()));
