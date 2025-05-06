@@ -138,6 +138,7 @@ export interface UserProfile {
   workInfo: WorkInfo;
   jobOfferInfo: JobOfferInfo;
   isComplete: boolean;
+  
 }
 
 // News types
@@ -152,4 +153,16 @@ export interface News {
   source: string;
   createdAt: Date;
   updatedAt: Date;
+}
+
+// Chat History
+export interface ChatMessage {
+  role: string;
+  content: string;
+  timestamp: Date;
+}
+
+export interface ChatHistory {
+  userId: string;
+  messages: ChatMessage[];
 }

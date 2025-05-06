@@ -8,7 +8,7 @@ export interface IUserProfile extends Document, UserProfile {
 // Language Test Schema
 const LanguageTestSchema: Schema = new Schema({
   type: { type: String, default: '' },
-  clbScore: { type: Number, default: null },
+  clbScore: { type: Number, default: null },  
 });
 
 // Education Schema

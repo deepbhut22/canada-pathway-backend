@@ -12,7 +12,7 @@ import userProfileRoutes from './routes/userProfileRoutes';
 import newsRoutes from './routes/newsRoutes';
 import reportRoutes from './routes/reportRoutes';
 import { errorHandler } from './middleware/errorMiddleware';
-
+import chatRoutes from './routes/chatRouter';
 // Load environment variables
 dotenv.config();
 
@@ -45,6 +45,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/profile', userProfileRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/report', reportRoutes);
+
+// Chat routes
+app.use('/api/chat', chatRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
