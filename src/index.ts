@@ -23,9 +23,21 @@ const app: Express = express();
 const PORT = parseInt(process.env.PORT || "5000", 10);
 const HOST = "0.0.0.0";
 
+const allowedOrigins = [
+  'https://pathpr.ca',
+  'https://www.pathpr.ca',
+  'http://localhost:5173', // optional, useful for local dev
+];
+
 // Middleware
 app.use(cors({
-  origin: '*',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],

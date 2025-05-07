@@ -8,7 +8,6 @@ import { expressEntryPrompt } from '../utils/prompts/expressEntry';
 import { pnpPrompt } from '../utils/prompts/pnp';
 import { recommendationPrompt } from '../utils/prompts/recommendation';
 import { expressEntryReport } from '../utils/llmCalls';
-import { log } from 'node:console';
 dotenv.config();
 
 const openai = new OpenAI({
