@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import ChatHistory from "../models/chatHistoryModel";
 import dotenv from 'dotenv';
 import OpenAI from "openai";
-import { UserDocument } from "../types";
 
 dotenv.config();
 
@@ -53,8 +52,11 @@ export const addMessage = async (req: Request, res: Response) => {
         const systemPrompt = `
 You are a helpful assistant specialized in Canadian immigration. Only answer questions strictly related to Canadian immigration policies, processes, and requirements.
 
+Respond in a clear, concise, and precise manner. Avoid long explanations unless explicitly asked for details.
+
 User data: ${JSON.stringify(req.userData)}
-    `;
+`;
+
 
         const completion = await openai.chat.completions.create({
             model: 'gpt-4.1-mini',
