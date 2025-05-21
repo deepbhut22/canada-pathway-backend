@@ -2,38 +2,41 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 // Express Entry Report Schema
 const ExpressEntryReportSchema = new Schema({
-  crsScore: { type: Number, required: true },
-  scoreBreakdown: {
-    coreHumanCapital: {
-      score: { type: Number, required: true },
-      maximum: { type: Number, required: true },
-      reason: { type: [String], required: true }
+  
+  expressEntryProfile: {
+    crsScore: { type: Number, required: true },
+    scoreBreakdown: {
+      coreHumanCapital: {
+        score: { type: Number, required: true },
+        maximum: { type: Number, required: true },
+        reason: { type: [String], required: true }
+      },
+      spouseFactors: {
+        score: { type: Number, required: true },
+        maximum: { type: Number, required: true },
+        reason: { type: [String], required: true }
+      },
+      skillTransferability: {
+        score: { type: Number, required: true },
+        maximum: { type: Number, required: true },
+        reason: { type: [String], required: true }
+      },
+      additionalPoints: {
+        score: { type: Number, required: true },
+        maximum: { type: Number, required: true },
+        reason: { type: [String], required: true }
+      }
     },
-    spouseFactors: {
-      score: { type: Number, required: true },
-      maximum: { type: Number, required: true },
-      reason: { type: [String], required: true }
-    },
-    skillTransferability: {
-      score: { type: Number, required: true },
-      maximum: { type: Number, required: true },
-      reason: { type: [String], required: true }
-    },
-    additionalPoints: {
-      score: { type: Number, required: true },
-      maximum: { type: Number, required: true },
-      reason: { type: [String], required: true }
-    }
   },
   eligibilityStatus: [{
     program: { type: String, required: true },
     isEligible: { type: Boolean, required: true },
-    details: { type: String, required: true }
+    reason: [String]
   }],
   categoryBasedEligibility: [{
     program: { type: String, required: true },
     isEligible: { type: Boolean, required: true },
-    details: { type: String, required: true }
+    reason: [String]
   }]
 });
 
@@ -80,6 +83,11 @@ const ImmigrationReportSchema = new Schema({
     type: Schema.Types.Mixed,
     default: null
   },
+  regenerations: [
+    {
+      date: { type: Date, default: Date.now }
+    }
+  ],
   createdAt: {
     type: Date,
     default: Date.now

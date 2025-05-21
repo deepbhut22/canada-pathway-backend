@@ -174,3 +174,135 @@ export const generateRecommendationReport = async (req: Request, res: Response) 
         return res.status(500).json({ error: 'Internal server error.' });
     }
 };
+
+
+export const generateReport = async (req: Request, res: Response) => {
+    try {
+        const userId = req.params.userId;
+        const profile = await UserProfile.findOne({ user: userId });
+
+        const oldReport = await ImmigrationReport.findOne({ user: userId });
+
+        if (oldReport && oldReport.expressEntry && oldReport.pnp && oldReport.recommendations) {
+            return res.status(200).json(oldReport);
+        }
+
+        if (!profile) {
+            return res.status(404).json({ error: 'User profile not found.' });
+        }
+
+        const expressEntryProfile = await expressEntryReport(profile);
+
+        const pnpProfile = await LLMCall(pnpPrompt(profile, expressEntryProfile));
+
+        const recommendationProfile = await LLMCall(recommendationPrompt(profile));
+
+        const immigrationReport = await ImmigrationReport.findOneAndUpdate(
+            { user: userId },
+            {
+                user: userId,
+                expressEntry: expressEntryProfile,
+                pnp: pnpProfile,
+                recommendations: recommendationProfile,
+                $setOnInsert: { createdAt: new Date() },
+                updatedAt: new Date()
+            },
+            { upsert: true, new: true }
+        );
+        return res.status(200).json(immigrationReport);
+    } catch (error) {
+        console.error('Error generating report:', error);
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
+}
+
+
+export const regenerateReport = async (req: Request, res: Response) => {
+    try {
+        const userId = req.params.userId;
+        
+        const profile = await UserProfile.findOne({user: userId});
+
+        if (!profile) {
+            return res.status(404).json({ error: 'User profile not found.' });
+        }
+
+        const lastReport = await ImmigrationReport.findOne({ user: userId }).sort({ createdAt: -1 });
+
+        const hasProfileChanged = !lastReport || (profile.updatedAt! > lastReport.updatedAt);
+
+        if (!hasProfileChanged) {
+            return res.status(400).json({ 
+                error: "No recent changes were found in your profile. Please update your immigration-related details to generate a new report."
+            });
+        }
+
+        const lastFive = (lastReport?.regenerations || [])
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            .slice(0, 5);
+
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+        const recentRegeneration = lastReport?.regenerations.filter((r) => new Date(r.date) >= oneWeekAgo) || [];
+
+        if (recentRegeneration.length >= 5) {
+            const oldestGen = lastFive[4];
+            const nextAvailable = new Date(new Date(oldestGen.date).getTime() + 7 * 24 * 60 * 60 * 1000);
+
+            return res.status(400).json({
+                error: `You've reached your weekly limit for generating reports. You can regenerate again on ${nextAvailable.toLocaleString()}.`
+            });
+        }
+
+        console.log("regenerating report...");
+        
+        
+        const expressEntryProfile = await expressEntryReport(profile);        
+        
+        const pnpProfile = await LLMCall(pnpPrompt(profile, expressEntryProfile));  
+        
+        const recommendationProfile = await LLMCall(recommendationPrompt(profile));
+
+        const immigrationReport = await ImmigrationReport.findOneAndUpdate(
+            { user: userId },
+            { 
+                user: userId,
+                expressEntry: expressEntryProfile,
+                pnp: pnpProfile,
+                recommendations: recommendationProfile,
+                $setOnInsert: { createdAt: new Date() },
+                $push: { regenerations: { date: new Date() } },
+                updatedAt: new Date()
+            },
+            { upsert: true, new: true }
+        );
+
+        return res.status(200).json(immigrationReport);
+    } catch (error) {
+        console.error('Error regenerating report:', error);
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
+}
+
+const LLMCall = async (prompt: string) => {
+    try {
+        const completion = await openai.chat.completions.create({
+            model: 'gpt-4.1-mini',
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.4,
+            response_format: { type: 'json_object' }
+        });
+
+        const report = completion.choices[0]?.message?.content;
+
+        if (!report) {
+            return null;
+        }
+
+        return JSON.parse(report);
+    } catch (error) {
+        console.error('Error calling LLM:', error);
+        return null;
+    }
+}

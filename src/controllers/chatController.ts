@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import ChatHistory from "../models/chatHistoryModel";
 import dotenv from 'dotenv';
 import OpenAI from "openai";
-
+import UserProfile from "../models/userProfileModel";
+import ImmigrationReport from "../models/immigrationReportModel";
 dotenv.config();
 
 const openai = new OpenAI({
@@ -29,6 +30,10 @@ export const addMessage = async (req: Request, res: Response) => {
         if ( !role || !content) {
             return res.status(400).json({ error: 'role, and content are required.' });
         }
+
+        const userProfile = await UserProfile.findOne({ user: userId });    
+        const reportData = await ImmigrationReport.findOne({ user: userId });
+
         const newMessage = {
             role,
             content,
@@ -52,25 +57,45 @@ export const addMessage = async (req: Request, res: Response) => {
         const systemPrompt = `
 You are a helpful assistant specialized in Canadian immigration. Only answer questions strictly related to Canadian immigration policies, processes, and requirements.
 
+Do not perform or calculate any Comprehensive Ranking System (CRS) scores or point‑based assessments yourself. If the user asks about their CRS score or points, you can scan the report data and response from that if you find that perticular data in the report otherwise respond by asking them to consult their generated report for those details.
+
+The user’s report data is provided in JSON under “Report data.” Some or all fields in that JSON may be null (i.e., labels exist but values are missing). In those cases:
+- Treat null values as “information not yet available.”
+- Do not make assumptions or fabricate data.
+- If the user asks about a missing data point, remind them to check or update their profile for that detail.
+- Continue to answer other questions normally using available data and your immigration expertise.
+- If the user asks about recent Express Entry draws, immigration trends, or Canadian immigration news, advise them to explore the Statistics, Latest News, or Resources section on our website for the most up-to-date information.
+
 Respond in a clear, concise, and precise manner. Avoid long explanations unless explicitly asked for details.
 
-User data: ${JSON.stringify(req.userData)}
+User data: ${JSON.stringify(userProfile)}
+Report data: ${JSON.stringify(reportData ?? null)}
 `;
 
-
-        const completion = await openai.chat.completions.create({
-            model: 'gpt-4.1-mini',
-            messages: [
-                { role: 'system', content: systemPrompt },
-                ...pastMessages.map(msg => ({
-                    role: msg.role as 'user' | 'assistant',  // explicitly cast
-                    content: msg.content
-                })),
-                { role: 'user', content: content }
-            ]
+        const response = await fetch('https://api.x.ai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.GROK_API_KEY}` // or hardcoded token
+            },
+            body: JSON.stringify({
+                model: 'grok-3-mini-beta',
+                temperature: 0,
+                stream: false,
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    ...pastMessages.map(msg => ({
+                        role: msg.role as 'user' | 'assistant',
+                        content: msg.content
+                    })),
+                    { role: 'user', content: content }
+                ]
+            })
         });
 
-        const assistantResponse = completion.choices[0].message.content;
+        const data = await response.json();    
+        const assistantResponse = data.choices?.[0]?.message?.content;
+
 
         const answer: {
             role: 'assistant',
@@ -78,13 +103,15 @@ User data: ${JSON.stringify(req.userData)}
             timestamp: Date
         } = {
             role: 'assistant',
-            content: assistantResponse || '',
+            content: assistantResponse,
             timestamp: new Date()
         };
 
+        console.log(answer);
+
         pastMessages.push(answer);
 
-        chatHistory.messages = pastMessages;
+        chatHistory.messages = pastMessages;    
         await chatHistory.save();
         
         res.status(201).json(answer);

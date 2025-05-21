@@ -33,9 +33,7 @@ export const updateBasicInfo = async (
   res: Response,
   next: NextFunction
 ) => {
-  try {
-    console.log(req.body);
-    
+  try {    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return next(new AppError('Validation error', 400, errors.array()));

@@ -2,6 +2,7 @@ import { assessProgramEligibility } from "./eligibility";
 import {crsScorePrompt} from "./prompts/crsScorePrompt";
 import { OpenAI } from "openai";
 import { assessCategoryBasedEligibility } from "./categoryEligibility";
+import { userInfo } from "os";
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
@@ -10,19 +11,7 @@ const openai = new OpenAI({
 export const expressEntryReport = async (userProfile: any) => {
     try {
 
-        // const report = calculateCrsScore(userProfile);
-        // const report = assessProgramEligibility(userProfile);
         return {...assessCategoryBasedEligibility(userProfile), ...calculateCrsScore(userProfile), ...assessProgramEligibility(userProfile)};
-        // const prompt = crsScorePrompt(userProfile);
-        
-        // const completion = await openai.chat.completions.create({
-        //     model: 'gpt-4.1-mini',
-        //     messages: [{ role: 'user', content: prompt }],
-        //     temperature: 0.4,
-        //     response_format: { type: 'json_object' }
-        // });
-        
-        // const report = completion.choices[0]?.message?.content;
     } catch (error) {
         console.log(error);
         return null;
@@ -30,7 +19,7 @@ export const expressEntryReport = async (userProfile: any) => {
 }
 
 // Type definitions for user profile input
-export type EducationType = 'highSchool' | 'oneYear' | 'twoYear' | 'bachelor' | 'masters' | 'phd';
+export type EducationType = 'highSchool' | 'oneYear' | 'twoYear' | 'threeYear' | 'bachelor' | 'masters' | 'phd' | '';
 export interface EducationEntry { type: EducationType; country: string; }
 export interface LanguageTest { clbScore: number; }
 export interface WorkExperience {
@@ -89,7 +78,12 @@ export function calculateCrsScore(user: UserProfile): CrsResult {
     const ageScore = computeAgePoints(age, withSpouse);
     const ageReasons = [`Age ${age} → ${ageScore} points (${withSpouse ? 'with spouse' : 'without spouse'})`];
 
-    const educationType = getHighestEducationType(user.educationInfo.educationList);
+    let educationType = '' as EducationType;
+    if (user.educationInfo.educationList.length > 0) {
+        educationType = getHighestEducationType(user.educationInfo.educationList);
+    } else {
+        educationType = '' as EducationType;
+    }
     const educationScore = computeEducationPoints(educationType, withSpouse);
     const eduReasons = [`Education level "${educationType}" → ${educationScore} points`];
 
@@ -131,7 +125,8 @@ export function calculateCrsScore(user: UserProfile): CrsResult {
         spouseReasons = [
             `Spouse education → ${spEdu} points`,
             `Spouse Canadian work → ${spWork} points`,
-            `Spouse language → ${spLang} points`
+            `Spouse language → ${spLang} points`,
+            `Note: Assuming spouse has a CLB >= 7 and No work experience.`
         ];
     }
 
@@ -144,8 +139,8 @@ export function calculateCrsScore(user: UserProfile): CrsResult {
     const skillReasons = [
         `Education + language → ${edA} points`,
         `Education + Canadian XP → ${edB} points`,
-        `Foreign + language → ${fA} points`,
-        `Foreign + Canadian XP → ${fB} points`
+        `Foreign XP + language → ${fA} points`,
+        `Foreign XP + Canadian XP → ${fB} points`
     ];
 
 // 4. Additional Points
@@ -214,8 +209,10 @@ function computeEducationPoints(type: EducationType, withSpouse: boolean): numbe
         case 'oneYear': return [84, 90][m];
         case 'twoYear': return [91, 98][m];
         case 'bachelor': return [112, 120][m];
+        case 'threeYear': return [119, 128][m];
         case 'masters': return [126, 135][m];
         case 'phd': return [140, 150][m];
+        default: return 0;
     }
 }
 
@@ -246,12 +243,14 @@ function computeCanadianWorkPoints(years: number, withSpouse: boolean): number {
 
 function computeSpouseEducationPoints(type: EducationType): number {
     switch (type) {
-        case 'highSchool': return 0;
+        case 'highSchool': return 2;
         case 'oneYear': return 6;
         case 'twoYear': return 7;
         case 'bachelor': return 8;
+        case 'threeYear': return 9;
         case 'masters': return 10;
         case 'phd': return 10;
+        default: return 0;
     }
 }
 

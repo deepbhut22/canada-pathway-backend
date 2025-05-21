@@ -93,6 +93,7 @@ const BasicInfoSchema: Schema = new Schema({
   citizenCountry: { type: String, default: '' },
   residenceCountry: { type: String, default: '' },
   province: { type: String, default: '' },
+  mobileNumber: { type: String, default: '' },
 });
 
 // Language Info Schema

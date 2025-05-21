@@ -9,6 +9,8 @@ export interface IUser extends Document {
   profileComplete: boolean;
   createdAt: Date;
   updatedAt: Date;
+  passwordResetToken: string;
+  passwordResetExpires: Date;
   matchPassword(enteredPassword: string): Promise<boolean>;
 }
 
@@ -40,6 +42,16 @@ const UserSchema: Schema = new Schema(
     profileComplete: {
       type: Boolean,
       default: false,
+    },
+    passwordResetToken: {
+      type: String,
+      select: false,
+      required: false,
+    },
+    passwordResetExpires: {
+      type: Date,
+      select: false,
+      required: false,
     },
   },
   {

@@ -4,7 +4,7 @@ import User from '../models/userModel';
 import UserProfile from '../models/userProfileModel';
 import generateToken from '../utils/generateToken';
 import dotenv from 'dotenv';
-
+import { sendWelcomeEmail } from '../utils/email';
 dotenv.config();
 
 passport.use(
@@ -42,7 +42,7 @@ passport.use(
             email: newUser.email
           }
         });
-
+        await sendWelcomeEmail(newUser.email, newUser.firstName);
         return done(null, newUser);
       } catch (error) {
         return done(error as Error, undefined);

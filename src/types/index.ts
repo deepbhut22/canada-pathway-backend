@@ -1,4 +1,3 @@
-// User types
 export interface UserDocument extends Document {
   _id: string;
   email: string;
@@ -8,6 +7,8 @@ export interface UserDocument extends Document {
   profileComplete: boolean;
   createdAt: Date;
   updatedAt: Date;
+  passwordResetToken?: string;
+  passwordResetExpires?: Date | undefined;
 }
 
 // Basic Info
@@ -19,6 +20,7 @@ export interface BasicInfo {
   citizenCountry: string;
   residenceCountry: string;
   province?: string;
+  mobileNumber: string;
 }
 
 // Language Info
@@ -138,7 +140,7 @@ export interface UserProfile {
   workInfo: WorkInfo;
   jobOfferInfo: JobOfferInfo;
   isComplete: boolean;
-  
+  updatedAt?: Date;
 }
 
 // News types
@@ -165,4 +167,111 @@ export interface ChatMessage {
 export interface ChatHistory {
   userId: string;
   messages: ChatMessage[];
+}
+
+export enum DrawType {
+  EXPRESS_ENTRY = 'Express Entry',
+  PROVINCIAL = 'Provincial'
+}
+
+export interface RecentDraw {
+  id: string;
+  number: number;
+  date: string;
+  type: string;
+  invitations: number;
+  crsCutOff: number;
+  drawType: DrawType;
+  sourceURL: string;
+  createdAt: Date;
+}
+
+export interface ConsultationFee {
+  serviceName: string;
+  cost: number;
+  duration: string;
+}
+
+export interface Consultant {
+  id: string;
+  category: string;
+  businessName: string;
+  logoUrl: string;
+  fullName: string;
+  shortBio: string;
+  about: string;
+  officeAddress: string;
+  city: string;
+  serviceAreas: string[];
+  membershipNumber: string;
+  licenseStatus: string;
+  licenseExpiry: string;
+  phoneNumber: string;
+  emailAddress: string;
+  websiteUrl: string;
+  contactPersonName: string;
+  contactPersonPhone: string;
+  contactPersonEmail: string;
+  deliveryEmail: string;
+  languagesSpoken: string[];
+  starRating: number;
+  totalNumberOfReviews: number;
+  testimonials: string[];
+  areasOfExpertise: string[];
+  consultationFees: ConsultationFee[];
+  serviceStartsFrom: number;
+  isFeatured: boolean;
+  level: 1 | 2 | 3;
+}
+
+export interface TableData {
+  headers: string[];
+  rows: string[][];
+  caption?: string;
+}
+
+export interface ImageData {
+  src: string;              
+  alt: string;               
+  caption?: string;
+  position?: 'left' | 'center' | 'right';
+}
+
+export interface VideoData {
+  url: string;               
+  type: 'youtube' | 'vimeo' | 'mp4';
+  caption?: string;
+}
+
+export interface BlogPost {
+  slug: string;              
+  title: string;
+  author: {
+    id: string;
+    name: string;
+    avatarUrl?: string;
+  };
+  thumbnailUrl: string;    
+  excerpt: string;           
+  content: string;           
+  categories: string[];      
+  tags?: string[] | '';           
+  tableData?: TableData[] | '';
+  imageData?: ImageData[] | '';
+  videoData?: VideoData[] | '';
+
+  status: 'draft' | 'published' | 'archived';
+  readingTime?: number;      
+
+  createdAt: string;         
+  updatedAt: string;         
+  publishedAt?: string;      
+
+  seo?: {
+    metaTitle?: string;
+    metaDescription?: string;
+    metaKeywords?: string[];
+    openGraphImageUrl?: string;
+  };
+  isFeatured: boolean;
 }

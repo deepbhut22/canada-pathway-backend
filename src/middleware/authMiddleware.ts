@@ -13,7 +13,7 @@ declare global {
   namespace Express {
     interface Request {
       user?: User;
-      userData?: UserProfile;
+      // userData?: UserProfile;
     }
   }
 }
@@ -42,11 +42,11 @@ export const protect = async (
 
       // Get user from the database
       req.user = await User.findById(decoded.id).select('-password'); 
-      const userProfile = await UserProfile.findOne({user: decoded.id});      
-      if (!userProfile) {
-        throw new Error('User profile not found');
-      }
-      req.userData = userProfile;
+      // const userProfile = await UserProfile.findOne({user: decoded.id});      
+      // if (!userProfile) {
+      //   throw new Error('User profile not found');
+      // }
+      // req.userData = userProfile;
 
       next();
     } catch (error) {

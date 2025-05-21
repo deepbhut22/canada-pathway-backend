@@ -7,6 +7,9 @@ import {
   updateUserProfile,
   googleAuth,
   googleCallback,
+  forgotPassword,
+  resetPassword,
+  deleteAccount,
 } from '../controllers/authController';
 import { protect } from '../middleware/authMiddleware';
 
@@ -50,6 +53,15 @@ router.post(
 // Profile routes (protected)
 router.get('/profile', protect, getUserProfile);
 router.put('/profile', protect, updateUserProfile);
+
+
+// Forgot password route
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password', resetPassword);
+
+
+// Delete account route
+router.delete('/delete-account', protect, deleteAccount);
 
 
 export default router;
